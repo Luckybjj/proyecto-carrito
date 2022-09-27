@@ -7,13 +7,20 @@ let articulosCarrito = [];
 
 const cargarEventListeners = () => {
     // cuando se agregue un curso presionando "Agregar al Carrito"
-    listaCursos.addEventListener('click', agregarCurso)
+    listaCursos.addEventListener('click', agregarCurso);
 
     // Eliminar cursos del carrito
-    carrito.addEventListener('click', eliminarCurso)
+    carrito.addEventListener('click', eliminarCurso);
+
+    // Cuando el documento carga por completo, es buen momento para ir al storage y traer los resultados
+    // Mostrar cursos del localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+        articulosCarrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        carritoHTML();
+    })
 
     // Vaciar el carrito
-    vaciarCarritoBtn.addEventListener( 'click', () => {
+    vaciarCarritoBtn.addEventListener('click', () => {
         articulosCarrito = [];  // limpiar el arreglo
         limpiarHTML(); // elimina el html contenido en el carrito
 
@@ -38,11 +45,11 @@ const eliminarCurso = (e) => {
         const cursoId = e.target.getAttribute('data-id');
 
         // Eliminar articulos del carrito
-        articulosCarrito = articulosCarrito.filter( curso => curso.id !== cursoId)
+        articulosCarrito = articulosCarrito.filter(curso => curso.id !== cursoId)
         console.log(articulosCarrito);
 
         carritoHTML(); // volvemos a iterrar sobre el carrito y mostrar suu HTML 
-        
+
     }
 }
 
@@ -61,12 +68,12 @@ const leerDatosCurso = (curso) => {
     // console.log(infoCurso);
 
     // Revisar si un elemento ya existe en el carrito.
-    const existe =  articulosCarrito.some( curso => curso.id === infoCurso.id);
+    const existe = articulosCarrito.some(curso => curso.id === infoCurso.id);
     // console.log(existe);
     if (existe) {
         // Actualiza la cantidad
-        const cursos = articulosCarrito.map( curso => {
-            if(curso.id === infoCurso.id) {
+        const cursos = articulosCarrito.map(curso => {
+            if (curso.id === infoCurso.id) {
                 curso.cantidad++;
                 return curso    // retorna el objeto acutalizado
             } else {
@@ -77,7 +84,7 @@ const leerDatosCurso = (curso) => {
     } else {
         // Agrega elementos al carrito
         articulosCarrito = [...articulosCarrito, infoCurso] // se toma una copia del carrito de compras y se agregan articulos del objeto infoCurso
-        
+
     }
 
     console.log(articulosCarrito);
@@ -93,7 +100,7 @@ const carritoHTML = () => {
     // Recorre el carrito y genera el HTML
     articulosCarrito.forEach(curso => {
         // console.log(curso);
-        const { imagen, titulo, precio, cantidad} = curso;
+        const { imagen, titulo, precio, cantidad } = curso;
         const row = document.createElement('tr')   // se creará un <tr> que es lo que se requiere dentro de un <tbody>
         row.innerHTML = `
             <td>
@@ -114,8 +121,19 @@ const carritoHTML = () => {
             
         `;
         // Agrega el HTML del carrito en el tbody
-        contenedorCarrito.appendChild(row);  // appendChikd() interta un nuevo nodo dentro de la estructura del DOM de un documento
+        contenedorCarrito.appendChild(row);  // appendChild() interta un nuevo nodo dentro de la estructura del DOM de un documento
+        /* appendChild() --> es uno de los métodos fundamentales de la programación web usando el DOM.
+        Este método inserta un nuevo nodo dentro de la estructura del DOM de un documento, es la segunda 
+        parte del proceso central unos-dos crear-añadir pra construir páginas web.
+        */
+
     })
+    // Agregar el carrito de compras al Storage
+    sincronizarStorage();
+}
+
+const sincronizarStorage = () => {
+    localStorage.setItem('carrito', JSON.stringify(articulosCarrito))
 }
 
 // Necesitamos limpiar previemente el HTML  
@@ -128,7 +146,7 @@ const limpiarHTML = () => {
     // una vez limpiado todo el HTML dentro del contenedor, ya no se ejecuta.
     while (contenedorCarrito.firstChild) {  // firstChild --> devuelve cualquier node que sea el primer hijo de este.
         contenedorCarrito.removeChild(contenedorCarrito.firstChild)
-        
+
     }
 }
 
