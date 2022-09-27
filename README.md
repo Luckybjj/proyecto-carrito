@@ -7,5 +7,5 @@ Agregar y eliminar articulos de un carrito de compras utilizando JavaScript
 https://luckybjj.github.io/proyecto-carrito-localstorage/
 
 
-###Proyecto sin guardar los datos en el localStorage
+### Proyecto sin guardar los datos en el localStorage
 https://legendary-dragon-358361.netlify.app/
